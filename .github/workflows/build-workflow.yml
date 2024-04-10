@@ -36,3 +36,15 @@ jobs:
               run: |
                   pnpm lint
                   pnpm type-check
+
+    deploy-QA:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+            - run: echo "Deploying to QA"
+
+    deploy-PROD:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+            - run: echo "Deploying to PROD"
