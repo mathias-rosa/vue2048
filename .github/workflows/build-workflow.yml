@@ -72,4 +72,4 @@ jobs:
             - name: Display structure of downloaded files
               run: ls -R
             - name: Deploy to PROD
-              run: pnpm dlx swa deploy ./dist --app-name stapp-vue2048-prod -d $AZURE_TOKEN_PROD_MR
+              run: pnpm dlx swa deploy -n stapp-vue-prod ./dist -d $AZURE_TOKEN_PROD_MR
