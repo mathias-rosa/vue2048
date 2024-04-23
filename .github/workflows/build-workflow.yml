@@ -50,5 +50,7 @@ jobs:
         needs: build
         if: github.event_name == 'workflow_dispatch'
         runs-on: ubuntu-latest
+        env:
+            AZURE_TOKEN_PROD_MR: ${{ secrets.AZURE_TOKEN_PROD_MR }}
         steps:
-            - run: echo "Deploying to PROD"
+            - run: pnpm dlx swa deploy ./dist --app-name stapp-vue2048-prod -d $AZURE_TOKEN_PROD_MR
