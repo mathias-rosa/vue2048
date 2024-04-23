@@ -32,7 +32,10 @@ jobs:
               with:
                   name: dist
                   path: dist
-                  retention-days: 30
+                  retention-days: 1
+            - name: Set retention time for main
+              if: github.ref == 'refs/heads/main'
+              run: echo "::set-env name=RETENTION_DAYS::7"
             - name: Static Analysis
               if: github.event_name == 'pull_request'
               run: |
@@ -67,7 +70,7 @@ jobs:
               run: ls ./dist
             - name: Install SWA CLI
               run: pnpm install -g @azure/static-web-apps-cli
-            - name: Deploy to PROD
+            - name: Deploy to QA
               run: swa deploy -n stapp-vue-prod ./dist -d $AZURE_TOKEN_QA_MR
 
     deploy-PROD:
