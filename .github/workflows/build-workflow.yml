@@ -1,6 +1,17 @@
 name: Build Workflow
 on:
     workflow_dispatch:
+        inputs:
+            run_static_analysis:
+                description: "Lancer l'analyse statique"
+                required: false
+                default: true
+                type: boolean
+            run_tests:
+                description: "Lancer les tests"
+                required: false
+                type: boolean
+                default: true
     push:
         branches:
             - main
@@ -48,10 +59,13 @@ jobs:
                   path: dist
                   retention-days: 1
             - name: Static Analysis
-              if: github.event_name == 'pull_request'
+              if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' && github.event.inputs.run_static_analysis == 'true'
               run: |
                   pnpm lint
                   pnpm type-check
+            - name: Tests
+              if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' && github.event.inputs.run_tests == 'true'
+              run: pnpm test
 
     deploy-QA:
         needs: build
