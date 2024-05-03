@@ -66,6 +66,18 @@ jobs:
             - name: Tests
               if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' && github.event.inputs.run_tests == 'true'
               run: pnpm test
+            - name: Create Release
+              id: create_release
+              uses: actions/create-release@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions
+              with:
+                  tag_name: ${{ github.ref }}
+                  release_name: Release ${{ github.ref }}
+                  body: |
+                      A pushed tag triggered an automatic release.
+                  draft: false
+                  prerelease: false
 
     deploy-QA:
         needs: build
@@ -97,18 +109,6 @@ jobs:
               run: pnpm install -g @azure/static-web-apps-cli
             - name: Deploy to QA
               run: swa deploy -n stapp-vue-prod ./dist -d $AZURE_TOKEN_QA_MR
-            - name: Create Release
-              id: create_release
-              uses: actions/create-release@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions
-              with:
-                  tag_name: ${{ github.ref }}
-                  release_name: Release ${{ github.ref }}
-                  body: |
-                      A pushed tag triggered an automatic release.
-                  draft: false
-                  prerelease: false
 
     deploy-PROD:
         needs: build
